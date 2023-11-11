@@ -1,0 +1,29 @@
+package FileSearchTool;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        //FileResultsCollection resultsCollection = new FileResultsCollection();
+
+        System.out.println("Welcome to the File Search Tool!");
+        
+        // Input search criteria
+        FileSearchCriteria criteria = new FileSearchCriteria();
+        criteria.inputCriteria(scanner);
+
+        // Perform file search
+        FileSearchLogic searchLogic = new FileSearchLogic(criteria);
+        searchLogic.search();
+
+        // Display search results
+        //resultsCollection.displayResults(searchLogic.getResults());
+
+        // Allow sorting and filtering
+        //resultsCollection.sortResults(); // Implement this method
+        //resultsCollection.filterResults(); // Implement this method
+
+        // User actions (e.g., open or delete files)
+        // Implement user actions as per your requirements
+    }
+}

@@ -1,0 +1,426 @@
+package FileManagementTool;
+
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+
+		boolean canClose = false;
+		String rootDir = null;
+		List<String> history = new ArrayList<String>();
+		Commands myCommand = new Commands();
+		Validator check = new Validator();
+		WelcomeScreen welcome = new WelcomeScreen();
+		welcome.DisplayWelcomeText();
+
+		Scanner scanner = new Scanner(System.in);
+
+		while (!canClose) {
+
+			System.out.println("\nKindly Enter the root Directory to start the Application :");
+			rootDir = scanner.nextLine();
+
+			if (!Validator.isNullOrEmpty(rootDir)) {
+				File dir = new File(rootDir);
+
+				if (dir.exists()) {
+
+					System.out.println("\nRoot Directory is set Successfully!");
+					System.out.println("\nWelcome To File Management Tool :)");
+
+					boolean canCloseWindow = false;
+					while (!canCloseWindow) {
+
+						HashMap<String, List<String>> filenames = new HashMap<String, List<String>>();
+						HashMap<String, List<String>> allFiles = new HashMap<String, List<String>>();
+						File_Management management = new File_Management(rootDir);
+						management.getAllDirectoriesFromRoot(rootDir, allFiles);
+
+						try {
+							System.out.println("\nEnter a Command : ");
+							String input = scanner.nextLine();
+
+							if (check.isValidCommand(myCommand, input)) {
+
+								filenames = management.getNonDistinctFileNames(allFiles);
+								String command = check.getValidCommand(myCommand).toUpperCase();
+								String inputFilePath = "";
+
+								switch (command.toUpperCase()) {
+								case "MYFILES":
+
+									try {
+										history.add(input);
+										RetrieveMyFiles(filenames);
+										System.out.println("\n");
+									} catch (Exception e) {
+										System.err.println(
+												"Something went wrong while Retrieving files for the Directory!");
+									}
+
+									break;
+								case "ADD":
+									try {
+										history.add(input);
+										AddCommand(check, input, filenames, management);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Adding File!");
+									}
+									break;
+								case "DELETE":
+									try {
+										history.add(input);
+										DeleteCommand(check, filenames, management, input);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Deleting!");
+									}
+									break;
+								case "SEARCH":
+
+									try {
+										history.add(input);
+										FindCommand(check, filenames, management, input);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Searching Files with KeyWords!");
+									}
+
+									break;
+								case "FILEINFO":
+
+									try {
+										history.add(input);
+										inputFilePath = check.getBetweenStrings(input, "[", "]");
+
+										if (Validator.isPathValid(inputFilePath)) {
+
+											File file = new File(inputFilePath);
+
+											Path path = Paths.get(file.getAbsolutePath());
+											management.BasicFileAttributes(path);
+
+										}
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Finding file information!");
+									}
+									System.out.println("\n");
+									break;
+								case "SORTA":
+									try {
+
+										history.add(input);
+										AscendingSortCommand(check, allFiles, management, input);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Sorting in Ascending!");
+									}
+
+									break;
+								case "SORTD":
+									try {
+
+										history.add(input);
+										DescendingSortCommand(check, allFiles, management, input);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Sorting in Descending!");
+									}
+
+									break;
+								case "RENAME":
+									try {
+										history.add(input);
+										RenameCommand(check, filenames, management, input);
+
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Renaming!");
+									}
+									break;
+								case "MAIN":
+
+									try {
+										history.add(input);
+										welcome.DisplayWelcomeText();
+									} catch (Exception e) {
+										System.err.println("Something went wrong while going back to the Main Menu!");
+									}
+									break;
+								case "HISTORY":
+									try {
+
+										for (String value : history) {
+
+											System.out.println("\n" + value);
+										}
+
+										history.add(input);
+									} catch (Exception e) {
+										System.err.println("Something went wrong while Showing History!");
+									}
+									break;
+								case "RESET":
+									history = new ArrayList<String>();
+									rootDir = null;
+									myCommand = new Commands();
+									check = new Validator();
+									canCloseWindow = true;
+									System.out.println("Reset Successfully!");
+									System.out.println("\n");
+									break;
+								case "CLOSE":
+									canClose = true;
+									canCloseWindow = true;
+									break;
+								default:
+									// Invalid Command Entered Popup
+									System.err.println("Invalid Command, Kindly Enter a Valid Command to proceed");
+									break;
+								}
+
+							} else {
+								// Invalid Command Entered Popup
+								System.out.println("Invalid Command!");
+							}
+
+						} catch (Exception e) {
+							System.err.println("An error occurred - Message : " + e.getMessage());
+							e.printStackTrace();
+						}
+						
+					}
+				} else {
+					if(!canClose) {
+						// Root Directory doesnt exists..Enter Valid root Directory
+						System.out
+								.println("Root Directory doesn't Exist, Kindly provide a Valid Root Directory to proceed");
+					}
+					
+					
+				}
+			} else {
+				if(!canClose) {
+				// Empty root dir command Validation popup
+				System.out
+						.println("Enter a Valid Root Directory, Empty Input for the root directory is not Admissible");
+				}
+				
+			}
+			
+			System.out.println("\nApplication Exited");
+		}
+
+	}
+
+
+	/**
+	 * @param filenames
+	 */
+	private static void RetrieveMyFiles(HashMap<String, List<String>> filenames) {
+		for (Map.Entry<String, List<String>> value : filenames.entrySet()) {
+
+			String key = value.getKey();
+
+			for (String folderPath : value.getValue()) {
+				
+				Path path = Paths.get(folderPath, key);
+				System.out.println(key + "  ~~~  " + path.toString());
+			}
+		}
+	}
+	
+	
+
+
+	/**
+	 * @param check
+	 * @param input
+	 * @throws IOException
+	 */
+	private static void AddCommand(Validator check, String input, HashMap<String, List<String>> filenames,
+			File_Management management) throws IOException {
+		String inputFilePath;
+		inputFilePath = check.getBetweenStrings(input, "[", "]").trim();
+
+		if (Validator.isPathValid(inputFilePath)) {
+
+			File addfile = new File(inputFilePath);
+			if (!addfile.exists()) {
+
+				if (addfile.createNewFile()) {
+					boolean isAdded = management.updateAddedFileToCollection(addfile.getAbsolutePath(), filenames);
+					if (isAdded) {
+						System.out.println("File Sucessfully Added");
+					} else {
+						System.out.println("File is not Added");
+					}
+				} else {
+					System.out.println("File is not Added");
+				}
+			} else {
+				System.out.println(
+						"File Already Exits in the same Directory, Kindly add a different file or add it to a different directory");
+			}
+
+		} else {
+			System.out.println("Invalid FilePath Entered in Add Command!");
+		}
+		
+	}
+	
+	
+	
+	private static void DeleteCommand(Validator check, HashMap<String, List<String>> filenames,
+			File_Management management, String input) {
+		String inputFilePath;
+		inputFilePath = check.getBetweenStrings(input, "[", "]").trim();
+
+		if (Validator.isPathValid(inputFilePath)) {
+			File filetoDelete = (new File(inputFilePath));
+
+			if (filetoDelete.exists()) {
+
+				if (management.deleteFile(filetoDelete.getAbsolutePath())) {
+
+					boolean deleted = management.updateDeletedFileToCollection(inputFilePath, filetoDelete.getParent(),
+							filenames);
+					if (deleted) {
+						System.out.println("File Deleted Successfully!");
+					} else {
+						System.out.println("Deleted file do not update to collection.");
+					}
+				} else {
+					System.err.println("Error Occurred : Something went wrong while deleting the file!");
+				}
+
+			} else {
+				System.err.println("FilePath Entered to Delete does not Exists!");
+			}
+
+		} else {
+			System.out.println("Invalid FilePath Entered in Delete Command!");
+		}
+	}
+	
+	
+	
+	
+	private static void FindCommand(Validator check, HashMap<String, List<String>> filenames,
+			File_Management management, String input) {
+		String keyword = check.getBetweenStrings(input, "[", "]").trim();
+
+		if (!Validator.isNullOrEmpty(keyword)) {
+
+			List<String> outputLstContainingKeywords = management.searchFilesUsingKeywords(keyword, filenames);
+
+			if (outputLstContainingKeywords != null && outputLstContainingKeywords.size() > 0) {
+
+				for (String filename : outputLstContainingKeywords) {
+					System.out.println("\n" + filename);
+				}
+
+			} else {
+				System.out.println("No Files found with the Mentioned KeyWords to Find!");
+			}
+
+		} else {
+			System.out.println("Invalid FilePath Entered in Find Command!");
+		}
+	}
+	
+	
+	
+	private static void AscendingSortCommand(Validator check, HashMap<String, List<String>> allFiles,
+			File_Management management, String input) {
+		String inputFilePath;
+		inputFilePath = check.getBetweenStrings(input, "[", "]").trim();
+		if (Validator.isPathValid(inputFilePath)) {
+
+			if ((new File(inputFilePath).isDirectory())) {
+				
+				List<String> sortedFiles = management.ascendingSort(allFiles, inputFilePath);
+
+				for (String file : sortedFiles) {
+					System.out.println(file);
+				}
+			} else {
+				System.out.println("Not a Valid Directory!");
+			}
+			
+		} else {
+			System.out.println("Not a Valid File!");
+		}
+	}
+	
+	
+	
+	
+	private static void DescendingSortCommand(Validator check, HashMap<String, List<String>> allFiles,
+			File_Management management, String input) {
+		String inputFilePath;
+		inputFilePath = check.getBetweenStrings(input, "[", "]").trim();
+		if (Validator.isPathValid(inputFilePath)) {
+
+			if ((new File(inputFilePath).isDirectory())) {
+				
+				List<String> sortedFiles = management.descendingSort(allFiles, inputFilePath);
+
+				for (String file : sortedFiles) {
+					System.out.println(file);
+				}
+			} else {
+				System.out.println("Not a Valid Directory!");
+			}
+		} else {
+			System.out.println("Not a Valid File!");
+		}
+	}
+	
+	
+	
+	
+	private static void RenameCommand(Validator check, HashMap<String, List<String>> filenames,
+			File_Management management, String input) {
+		String inputFilePath = check.getBetweenStrings(input, "[", "]");
+		if (inputFilePath.contains(",")) {
+			String[] filePaths = inputFilePath.split(",");
+			if (filePaths.length == 2) {
+				String oldFilePath = filePaths[0].trim();
+				String newFilePath = filePaths[1].trim();
+				if (Validator.isPathValid(oldFilePath) && Validator.isPathValid(newFilePath)) {
+
+					if (management.renameFile(oldFilePath, newFilePath)) {
+
+						File oldfile = (new File(oldFilePath));
+						File newfile = (new File(newFilePath));
+						String oldFileParent = oldfile.getParent();
+						String newFileParent = newfile.getParent();
+						if (oldFileParent.equals(newFileParent)) {
+							boolean renamed = management.updateRenamedFileToCollection(oldFilePath, newFilePath,
+									oldfile.getParent(), filenames);
+							if (renamed) {
+								System.out.println(
+										oldfile.getName() + " renamed to " + newfile.getName() + " Successfully");
+							}
+						} else {
+							System.out
+									.println("Entered Old File Path and New File Path is not from the Same Directory");
+						}
+					} else {
+						System.err.println("Error While Renaming the file");
+					}
+
+				} else {
+					System.out.println("Invalid FilePaths Entered in Rename Command!");
+				}
+			} else {
+				System.err.println("Invalid FilePaths Comma Seperator not Found for Rename Command");
+			}
+		} else {
+			System.err.println("Invalid FilePaths Comma Seperator not Found for Rename Command");
+		}
+	}
+
+
+
+	
+}
