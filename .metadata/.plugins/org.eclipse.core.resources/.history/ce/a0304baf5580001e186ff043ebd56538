@@ -30,7 +30,7 @@ public class File_Management {
 		}
 	}
 
-	
+	// root Directory
 	public void getAllDirectoriesFromRoot(String dirPath, HashMap<String, List<String>> allFiles) {
 
 		try {
@@ -46,14 +46,14 @@ public class File_Management {
 
 				if (file.isDirectory()) {
 					String absolutePath = file.getAbsolutePath();
-					
+					// If Directories are found
 					if (!allFiles.containsKey(absolutePath)) {
 						allFiles.put(absolutePath, new ArrayList<String>());
-						
+						// Recursive if Folder
 						getAllDirectoriesFromRoot(absolutePath, allFiles);
 					}
 				} else {
-					
+					// If Files are found then 
 					File parentDir = file.getParentFile();
 					String parentAbsPath = parentDir.getAbsolutePath();
 					if (parentDir.isDirectory()) {
@@ -74,7 +74,7 @@ public class File_Management {
 
 	}
 
-	
+	//get the filenames in key and the folders where the same filename exists
 	public HashMap<String, List<String>> getNonDistinctFileNames(HashMap<String, List<String>> allFiles) {
 
 		HashMap<String, List<String>> filenames = new HashMap<String, List<String>>();
@@ -103,7 +103,39 @@ public class File_Management {
 		return filenames;
 	}
 
+	// To check if the new filename exists in the same folder or not
+//	public boolean fileExistsinSameDirectory(String filename, String dirAbsolutePath,
+//			HashMap<String, List<String>> filenames) {
+//
+//		boolean status = false;
+//
+//		if (filenames.containsKey(filename)) {
+//			List<String> foldersOfSameFilename = filenames.get(filename);
+//
+//			for (String dirPath : foldersOfSameFilename) {
+//
+//				if (dirPath.equals(dirAbsolutePath)) {
+//					status = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		return status;
+//	}
 
+	// To Rename the physical file in the machine
+	// Note path should be given as Absolute path of the file
+	public boolean renameFile(String oldFilePath, String newFilePath) {
+		File oldName = new File(oldFilePath);
+		File newName = new File(newFilePath);
+
+		if (oldName.renameTo(newName)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public boolean updateAddedFileToCollection(String filepath, HashMap<String, List<String>> filenames) {
 		boolean status = false;
@@ -135,20 +167,6 @@ public class File_Management {
 		return status;
 	}
 
-	
-	
-	public boolean renameFile(String oldFilePath, String newFilePath) {
-		File oldName = new File(oldFilePath);
-		File newName = new File(newFilePath);
-
-		if (oldName.renameTo(newName)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	
 	public boolean updateRenamedFileToCollection(String oldFilePath, String newFilePath, String dirOfFile,
 			HashMap<String, List<String>> filenames) {
 		boolean status = false;
@@ -218,7 +236,7 @@ public class File_Management {
 
 			if (checked) {
 				List<String> values = filenames.get(fileName);
-				if (values != null && values.size() == 1) {
+				if (values != null && values.size() >= 1) {
 					filenames.remove(fileName);
 					status = true;
 				} else {
@@ -240,7 +258,7 @@ public class File_Management {
 		return status;
 	}
 
-	
+	// Searching files using the Keyword
 	public List<String> searchFilesUsingKeywords(String keyword, HashMap<String, List<String>> filenames) {
 		List<String> outputFilesMatchingKeyword = new ArrayList<String>();
 
@@ -259,10 +277,10 @@ public class File_Management {
 		return outputFilesMatchingKeyword;
 	}
 
-	public List<String> ascendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
+	public List<String> ascendingSort(HashMap<String, List<String>> filenames, String dirPath) {
 		List<String> sortedFileNames = new ArrayList<String>();
 		try {
-			Set<String> keys = allfiles.keySet();
+			Set<String> keys = filenames.keySet();
 
 			List<String> keyslst = new ArrayList<String>();
 			for (String key : keys) {
@@ -295,10 +313,10 @@ public class File_Management {
 		return sortedFileNames;
 	}
 
-	public List<String> descendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
+	public List<String> descendingSort(HashMap<String, List<String>> filenames, String dirPath) {
 		List<String> sortedFileNames = new ArrayList<String>();
 		try {
-			Set<String> keys = allfiles.keySet();
+			Set<String> keys = filenames.keySet();
 
 			List<String> keyslst = new ArrayList<String>();
 			for (String key : keys) {
@@ -365,13 +383,14 @@ public class File_Management {
 
 		BasicFileAttributes basicFileAttributes = Files.readAttributes(path, BasicFileAttributes.class);
 
-		
+		// Print basic file attributes
 		System.out.println("Creation Time      : " + basicFileAttributes.creationTime());
 		System.out.println("Last Access Time   : " + basicFileAttributes.lastAccessTime());
 		System.out.println("Last Modified Time : " + basicFileAttributes.lastModifiedTime());
 		System.out.println("Size               : " + basicFileAttributes.size());
 		System.out.println("Is Regular file    : " + basicFileAttributes.isRegularFile());
-		
+		System.out.println("Is Symbolic Link   : " + basicFileAttributes.isSymbolicLink());
+		System.out.println("Other              : " + basicFileAttributes.isOther());
 
 		System.out.println("Is File Exists     : " + file.exists());
 		System.out.println("Is File Writable   : " + file.canWrite());

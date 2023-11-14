@@ -103,6 +103,26 @@ public class File_Management {
 		return filenames;
 	}
 
+	
+//	public boolean fileExistsinSameDirectory(String filename, String dirAbsolutePath,
+//			HashMap<String, List<String>> filenames) {
+//
+//		boolean status = false;
+//
+//		if (filenames.containsKey(filename)) {
+//			List<String> foldersOfSameFilename = filenames.get(filename);
+//
+//			for (String dirPath : foldersOfSameFilename) {
+//
+//				if (dirPath.equals(dirAbsolutePath)) {
+//					status = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		return status;
+//	}
 
 
 	public boolean updateAddedFileToCollection(String filepath, HashMap<String, List<String>> filenames) {
@@ -259,10 +279,10 @@ public class File_Management {
 		return outputFilesMatchingKeyword;
 	}
 
-	public List<String> ascendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
+	public List<String> ascendingSort(HashMap<String, List<String>> filenames, String dirPath) {
 		List<String> sortedFileNames = new ArrayList<String>();
 		try {
-			Set<String> keys = allfiles.keySet();
+			Set<String> keys = filenames.keySet();
 
 			List<String> keyslst = new ArrayList<String>();
 			for (String key : keys) {
@@ -295,10 +315,10 @@ public class File_Management {
 		return sortedFileNames;
 	}
 
-	public List<String> descendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
+	public List<String> descendingSort(HashMap<String, List<String>> filenames, String dirPath) {
 		List<String> sortedFileNames = new ArrayList<String>();
 		try {
-			Set<String> keys = allfiles.keySet();
+			Set<String> keys = filenames.keySet();
 
 			List<String> keyslst = new ArrayList<String>();
 			for (String key : keys) {

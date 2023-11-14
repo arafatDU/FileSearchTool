@@ -172,13 +172,13 @@ public class Main {
 									canCloseWindow = true;
 									break;
 								default:
-									
+									// Invalid Command Entered Popup
 									System.err.println("Invalid Command, Kindly Enter a Valid Command to proceed");
 									break;
 								}
 
 							} else {
-								
+								// Invalid Command Entered Popup
 								System.out.println("Invalid Command!");
 							}
 

@@ -19,7 +19,7 @@ public class WelcomeScreen {
 	
 	
 	private void displayApplicationOperationalCommands() {
-		
+		//The details of the user interface such as options displaying the user interaction information 
 		System.out.println("\n\n\nDetails of the User Interface Options are as Follows : ");
 		System.out.println("\nfile information of a file    : FileInfo[filepath with extension]");
 		System.out.println("\ndisplays all the files        : MyFiles");

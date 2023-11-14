@@ -172,13 +172,13 @@ public class Main {
 									canCloseWindow = true;
 									break;
 								default:
-									
+									// Invalid Command Entered Popup
 									System.err.println("Invalid Command, Kindly Enter a Valid Command to proceed");
 									break;
 								}
 
 							} else {
-								
+								// Invalid Command Entered Popup
 								System.out.println("Invalid Command!");
 							}
 
@@ -190,7 +190,7 @@ public class Main {
 					}
 				} else {
 					if(!canClose) {
-						
+						// Root Directory doesnt exists..Enter Valid root Directory
 						System.out
 								.println("Root Directory doesn't Exist, Kindly provide a Valid Root Directory to proceed");
 					}
@@ -199,7 +199,7 @@ public class Main {
 				}
 			} else {
 				if(!canClose) {
-				
+				// Empty root dir command Validation popup
 				System.out
 						.println("Enter a Valid Root Directory, Empty Input for the root directory is not Admissible");
 				}
@@ -212,7 +212,9 @@ public class Main {
 	}
 
 
-	
+	/**
+	 * @param filenames
+	 */
 	private static void RetrieveMyFiles(HashMap<String, List<String>> filenames) {
 		for (Map.Entry<String, List<String>> value : filenames.entrySet()) {
 
@@ -229,7 +231,11 @@ public class Main {
 	
 
 
-	
+	/**
+	 * @param check
+	 * @param input
+	 * @throws IOException
+	 */
 	private static void AddCommand(Validator check, String input, HashMap<String, List<String>> filenames,
 			File_Management management) throws IOException {
 		String inputFilePath;

@@ -103,6 +103,26 @@ public class File_Management {
 		return filenames;
 	}
 
+	
+//	public boolean fileExistsinSameDirectory(String filename, String dirAbsolutePath,
+//			HashMap<String, List<String>> filenames) {
+//
+//		boolean status = false;
+//
+//		if (filenames.containsKey(filename)) {
+//			List<String> foldersOfSameFilename = filenames.get(filename);
+//
+//			for (String dirPath : foldersOfSameFilename) {
+//
+//				if (dirPath.equals(dirAbsolutePath)) {
+//					status = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		return status;
+//	}
 
 
 	public boolean updateAddedFileToCollection(String filepath, HashMap<String, List<String>> filenames) {

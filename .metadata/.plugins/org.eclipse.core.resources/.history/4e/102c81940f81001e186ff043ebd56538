@@ -103,6 +103,26 @@ public class File_Management {
 		return filenames;
 	}
 
+	
+//	public boolean fileExistsinSameDirectory(String filename, String dirAbsolutePath,
+//			HashMap<String, List<String>> filenames) {
+//
+//		boolean status = false;
+//
+//		if (filenames.containsKey(filename)) {
+//			List<String> foldersOfSameFilename = filenames.get(filename);
+//
+//			for (String dirPath : foldersOfSameFilename) {
+//
+//				if (dirPath.equals(dirAbsolutePath)) {
+//					status = true;
+//					break;
+//				}
+//			}
+//		}
+//
+//		return status;
+//	}
 
 
 	public boolean updateAddedFileToCollection(String filepath, HashMap<String, List<String>> filenames) {
@@ -259,34 +279,37 @@ public class File_Management {
 		return outputFilesMatchingKeyword;
 	}
 
-	public List<String> ascendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
+	public List<String> ascendingSort(HashMap<String, List<String>> filenames, String dirPath) {
 		List<String> sortedFileNames = new ArrayList<String>();
 		try {
-			Set<String> keys = allfiles.keySet();
+			Set<String> keys = filenames.keySet();
 
 			List<String> keyslst = new ArrayList<String>();
-			for (String key : keys) {
-				if (dirPath.equals(key)) {
-
-					File file = new File(dirPath);
-
-					if (file.exists() && file.isDirectory()) {
-
-						FileFilter filter = new FileFilter() {
-							@Override
-							public boolean accept(File pathname) {
-								return pathname.isFile();
-							}
-						};
-
-						for (File childfile : file.listFiles(filter)) {
-							keyslst.add(childfile.getName());
-						}
-
-					}
-					break;
-				}
+			for(String key : keys) {
+				keyslst.add(key);
 			}
+//			for (String key : keys) {
+//				if (dirPath.equals(key)) {
+//
+//					File file = new File(dirPath);
+//
+//					if (file.exists() && file.isDirectory()) {
+//
+//						FileFilter filter = new FileFilter() {
+//							@Override
+//							public boolean accept(File pathname) {
+//								return pathname.isFile();
+//							}
+//						};
+//
+//						for (File childfile : file.listFiles(filter)) {
+//							keyslst.add(childfile.getName());
+//						}
+//
+//					}
+//					break;
+//				}
+//			}
 			Collections.sort(keyslst);
 			sortedFileNames = keyslst;
 		} catch (Exception e) {
@@ -295,41 +318,41 @@ public class File_Management {
 		return sortedFileNames;
 	}
 
-	public List<String> descendingSort(HashMap<String, List<String>> allfiles, String dirPath) {
-		List<String> sortedFileNames = new ArrayList<String>();
-		try {
-			Set<String> keys = allfiles.keySet();
-
-			List<String> keyslst = new ArrayList<String>();
-			for (String key : keys) {
-				if (dirPath.equals(key)) {
-
-					File file = new File(dirPath);
-
-					if (file.exists() && file.isDirectory()) {
-
-						FileFilter filter = new FileFilter() {
-							@Override
-							public boolean accept(File pathname) {
-								return pathname.isFile();
-							}
-						};
-
-						for (File childfile : file.listFiles(filter)) {
-							keyslst.add(childfile.getName());
-						}
-
-					}
-					break;
-				}
-			}
-			Collections.sort(keyslst, Collections.reverseOrder());
-			sortedFileNames = keyslst;
-		} catch (Exception e) {
-			System.err.println("Error Occurred while Sorting files in Descending order");
-		}
-		return sortedFileNames;
-	}
+//	public List<String> descendingSort(HashMap<String, List<String>> filenames, String dirPath) {
+//		List<String> sortedFileNames = new ArrayList<String>();
+//		try {
+//			Set<String> keys = filenames.keySet();
+//
+//			List<String> keyslst = new ArrayList<String>();
+//			for (String key : keys) {
+//				if (dirPath.equals(key)) {
+//
+//					File file = new File(dirPath);
+//
+//					if (file.exists() && file.isDirectory()) {
+//
+//						FileFilter filter = new FileFilter() {
+//							@Override
+//							public boolean accept(File pathname) {
+//								return pathname.isFile();
+//							}
+//						};
+//
+//						for (File childfile : file.listFiles(filter)) {
+//							keyslst.add(childfile.getName());
+//						}
+//
+//					}
+//					break;
+//				}
+//			}
+//			Collections.sort(keyslst, Collections.reverseOrder());
+//			sortedFileNames = keyslst;
+//		} catch (Exception e) {
+//			System.err.println("Error Occurred while Sorting files in Descending order");
+//		}
+//		return sortedFileNames;
+//	}
 
 	public List<String> getFilenamesMatchingExtension(HashMap<String, List<String>> filenames, String fileExtension) {
 		List<String> newFileNames = new ArrayList<String>();
